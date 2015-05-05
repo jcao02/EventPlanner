@@ -9,7 +9,7 @@ manager = Manager(app)
 manager.add_command("runserver", Server(
     use_debugger = True,
     use_reloader = True,
-    host = '0.0.0.0')
+    host = 'localhost')
 )
 
 @app.before_request
