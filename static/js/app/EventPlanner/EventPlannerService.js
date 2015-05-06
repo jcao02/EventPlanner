@@ -1,11 +1,10 @@
 EventPlannerModule.service('EventPlannerService', ['$q', '$http', function($q, $http) {
 
     this.ACreateUser = function(fUser) {
-        return  $http({
-          url: "EventPlanner/ACreateUser",
-          data: fUser,
-          method: 'POST',
-        });
+        return  $http.post( 
+                          "/eventplanner/ACreateUser",
+                          { data: fUser}
+                         );
     //    var labels = ["/VLoginUser", "/VRegisterUser", ];
     //    var res = labels[0];
     //    var deferred = $q.defer();
@@ -16,7 +15,7 @@ EventPlannerModule.service('EventPlannerService', ['$q', '$http', function($q, $
     this.VRegisterUser = function(args) {
         if(typeof args == 'undefined') args={};
         return $http({
-          url: 'EventPlanner/VRegisterUser',
+          url: 'eventplanner/VRegisterUser',
           method: 'GET',
           params: args
         });
@@ -28,7 +27,7 @@ EventPlannerModule.service('EventPlannerService', ['$q', '$http', function($q, $
 
     this.ALoginUser = function(fLogin) {
         return  $http({
-          url: "EventPlanner/ALoginUser",
+          url: "eventplanner/ALoginUser",
           data: fLogin,
           method: 'POST',
         });
@@ -42,7 +41,7 @@ EventPlannerModule.service('EventPlannerService', ['$q', '$http', function($q, $
     this.VLoginUser = function(args) {
         if(typeof args == 'undefined') args={};
         return $http({
-          url: 'EventPlanner/VLoginUser',
+          url: 'eventplanner/VLoginUser',
           method: 'GET',
           params: args
         });
@@ -55,7 +54,7 @@ EventPlannerModule.service('EventPlannerService', ['$q', '$http', function($q, $
     this.AEvents = function(args) {
         if(typeof args == 'undefined') args={};
         return $http({
-          url: 'EventPlanner/AEvents',
+          url: 'eventplanner/AEvents',
           method: 'GET',
           params: args
         });
@@ -68,7 +67,7 @@ EventPlannerModule.service('EventPlannerService', ['$q', '$http', function($q, $
     this.VHome = function(args) {
         if(typeof args == 'undefined') args={};
         return $http({
-          url: 'EventPlanner/VHome',
+          url: 'eventplanner/VHome',
           method: 'GET',
           params: args
         });

@@ -47,6 +47,10 @@ EventPlannerModule.controller('VRegisterUserController',
         if ($scope.logout) {
             $location.path('/');
         }
+
+        if (object.data['username']) {
+            $scope.usuario.nombre = object.data['username']; 
+        }
       });
       $scope.VLoginUser1 = function() {
         $location.path('/VLoginUser');
@@ -85,6 +89,7 @@ EventPlannerModule.controller('VLoginUserController',
             $location.path('/');
         }
       });
+
       $scope.VRegisterUser0 = function() {
         $location.path('/VRegisterUser');
       };
@@ -101,6 +106,10 @@ EventPlannerModule.controller('VLoginUserController',
                   $route.reload();
               } else {
                   $location.path(label);
+              }
+
+              if (object.data['username']) {
+                  $scope.usuario.nombre = object.data['username']; 
               }
           });
         }
@@ -119,7 +128,11 @@ EventPlannerModule.controller('VHomeController',
         if ($scope.logout) {
             $location.path('/');
         }
+          if (object.data['actor']) {
+              $scope.user = object.data['actor']; 
+          }  
       });
+
       $scope.AEvents0 = function(requestedEvent) {
         EventPlannerService.AEvents({"requestedEvent":((typeof requestedEvent === 'object')?JSON.stringify(requestedEvent):requestedEvent)}).then(function (object) {
           var msg = object.data["msg"];

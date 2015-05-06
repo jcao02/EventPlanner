@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import request, session, Blueprint, json
+from flask import request, session, Blueprint, json, g
 
 EventPlanner = Blueprint('EventPlanner', __name__)
 
@@ -22,7 +22,6 @@ def ACancelReservation():
     return json.dumps(res)
 
 
-
 @EventPlanner.route('/eventplanner/ACreateEvent', methods=['POST'])
 def ACreateEvent():
     #Access to POST/PUT fields using request.form['name']
@@ -41,13 +40,24 @@ def ACreateEvent():
     return json.dumps(res)
 
 
+from app.model.user import User 
 
 @EventPlanner.route('/eventplanner/ACreateUser', methods=['POST'])
 def ACreateUser():
     #POST/PUT parameters
     params = request.get_json()
-    results = [{'label':'/VLoginUser', 'msg':[ur'Usuario registrado exitosamente']}, {'label':'/VRegisterUser', 'msg':[ur'Error al crear usuario']}, ]
-    res = results[0]
+
+
+
+    results = [ {'label':'/VLoginUser', 'msg':[ur'Usuario registrado exitosamente']}, 
+                {'label':'/VRegisterUser', 'msg':[ur'Error al crear usuario']}, ]
+
+
+    user = User(params['data'])
+    if user.save():
+        res = results[0]
+    else:
+        res = results[1]
     #Action code goes here, res should be a list with a label and a message
 
 
@@ -198,9 +208,18 @@ def ALogOutUser():
 def ALoginUser():
     #POST/PUT parameters
     params = request.get_json()
-    results = [{'label':'/VHome', 'msg':[], "actor":"usuario"}, {'label':'/VLoginUser', 'msg':[ur'Error al iniciar sesión']}, ]
-    res = results[0]
-    #Action code goes here, res should be a list with a label and a message
+
+    user = User(params)
+
+    results = [ {'label':'/VHome', 'msg':[], "actor":user.user }, 
+                {'label':'/VLoginUser', 'msg':[ur'Error al iniciar sesión']}, ]
+
+
+
+    if user.authenticate():
+        res = results[0]
+    else:
+        res = results[1]
 
 
     #Action code ends here
