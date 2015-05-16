@@ -29,7 +29,7 @@ EventPlannerModule.controller('CreateUserController',
         }
       });
       $scope.VLoginUser1 = function() {
-        $location.path('/VLoginUser');
+        $location.path('/user/login');
       };
 
       $scope.fUserSubmitted = false;
@@ -40,7 +40,7 @@ EventPlannerModule.controller('CreateUserController',
               var msg = object.data["msg"];
               if (msg) flash(msg);
               var label = object.data["label"];
-              if (label == '/VRegisterUser') {
+              if (label == '/user/new') {
                   $route.reload();
               } else {
                   $location.path(label);
@@ -83,7 +83,7 @@ EventPlannerModule.controller('LoginUserController',
               var msg = object.data["msg"];
               if (msg) flash(msg);
               var label = object.data["label"];
-              if (label == '/VLoginUser') {
+              if (label == '/user/login') {
                   $route.reload();
               } else {
                   $location.path(label);
