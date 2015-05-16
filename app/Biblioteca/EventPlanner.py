@@ -49,8 +49,8 @@ def ACreateUser():
 
 
 
-    results = [ {'label':'/VLoginUser', 'msg':[ur'Usuario registrado exitosamente']}, 
-                {'label':'/VRegisterUser', 'msg':[ur'Error al crear usuario']}, ]
+    results = [ {'label':'/user/login', 'msg':[ur'Usuario registrado exitosamente']}, 
+                {'label':'/user/new', 'msg':[ur'Error al crear usuario']}, ]
 
 
     user = User(params['data'])

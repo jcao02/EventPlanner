@@ -6,8 +6,8 @@ var EventPlannerModule = angular.module('EventPlanner',
 EventPlannerModule.config(function ($routeProvider) {
     $routeProvider
     .when('/', { // Root
-        controller: 'VLoginUserController',
-        templateUrl: 'app/EventPlanner/VLoginUser.html'
+        controller: 'LoginUserController',
+        templateUrl: 'app/EventPlanner/user/login.html'
     });
 });
 
