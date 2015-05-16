@@ -67,6 +67,20 @@ EventPlannerModule.controller('VHomeController',
           }
         });};
 
+        $scope.AUsers2 = function() {
+        EventPlannerService.AUsers().then(function (object) {
+          var msg = object.data["msg"];
+          var users = object.data["users"];
+          if (users) flash(users)
+          if (msg) flash(msg);
+          var label = object.data["label"];
+          if (label == '/VHome') {
+              $route.reload();
+          } else {
+              $location.path(label);
+          }
+        });};
+
     }]);
 EventPlannerModule.controller('VListEventsController', 
         ['$scope', '$location', '$route', 'flash', 'EventPlannerService',
@@ -240,43 +254,6 @@ EventPlannerModule.controller('VRegisterEventController',
           });
         }
       };
-
-    }]);
-EventPlannerModule.controller('VListUsersController', 
-        ['$scope', '$location', '$route', 'flash', '$routeParams', 'EventPlannerService',
-    function ($scope, $location, $route, flash, $routeParams, EventPlannerService) {
-      $scope.msg = '';
-      EventPlannerService.VListUsers({"requestedUser":$routeParams.requestedUser}).then(function (object) {
-        $scope.res = object.data;
-        for (var key in object.data) {
-            $scope[key] = object.data[key];
-        }
-        if ($scope.logout) {
-            $location.path('/');
-        }
-      });
-      $scope.ADeleteUser0 = function() {
-        EventPlannerService.ADeleteUser().then(function (object) {
-          var msg = object.data["msg"];
-          if (msg) flash(msg);
-          var label = object.data["label"];
-          if (label == '/VListUsers') {
-              $route.reload();
-          } else {
-              $location.path(label);
-          }
-        });};
-      $scope.AVerifyAssitance1 = function() {
-        EventPlannerService.AVerifyAssitance().then(function (object) {
-          var msg = object.data["msg"];
-          if (msg) flash(msg);
-          var label = object.data["label"];
-          if (label == '/VListUsers') {
-              $route.reload();
-          } else {
-              $location.path(label);
-          }
-        });};
 
     }]);
 EventPlannerModule.controller('VCredentialController', 

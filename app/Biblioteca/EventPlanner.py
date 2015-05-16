@@ -255,7 +255,8 @@ def AReserveEvent():
 def AUsers():
     #POST/PUT parameters
     params = request.get_json()
-    results = [{'label':'/VListUsers', 'msg':[ur'Se listan los usuarios']}, ]
+
+    results = [{'label':'/users/1', 'msg':[ur'Se listan los usuarios']  }, ]
     res = results[0]
     #Action code goes here, res should be a list with a label and a message
 
@@ -356,7 +357,16 @@ def VListEvents():
 
 @EventPlanner.route('/eventplanner/VListUsers')
 def VListUsers():
-    res = {}
+    params = request.args
+
+    if params["requestedUser"] == "1":
+        users = User.all()
+    else:
+        users = User.from_event(1)
+    
+
+    res = { 'users' : users }
+
     if "actor" in session:
         res['actor']=session['actor']
     #Action code goes here, res should be a JSON structure

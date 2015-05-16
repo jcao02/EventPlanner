@@ -2,6 +2,7 @@ from flask import g
 from base import get_database
 
 TABLENAME = 'User'
+ASSISTANCE_TABLENAME = 'Assitance'
 
 class User:
     user     = ""
@@ -53,3 +54,35 @@ class User:
             user = cursor.fetchone()
             return user and len(user) > 0
 
+    @staticmethod
+    def all():
+        sql_request = 'SELECT username FROM %s' % (TABLENAME)
+        print " "
+        print sql_request
+        print " "
+
+        database = get_database()
+        cursor   = database.cursor()
+
+        cursor.execute(sql_request)
+
+        users = cursor.fetchall()
+
+        users = map(lambda x: x[0], users)
+        return users
+
+    @staticmethod
+    def from_event(event):
+        sql_request = 'SELECT participant FROM %s WHERE event="%s"' % ( ASSISTANCE_TABLENAME, event )
+        print " "
+        print sql_request
+        print " "
+
+        database = get_database()
+        cursor   = database.cursor()
+
+        cursor.execute(sql_request)
+
+        users = cursor.fetchall()
+        users = map(lambda x: x[0], users)
+        return users

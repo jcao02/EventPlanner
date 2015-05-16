@@ -219,7 +219,7 @@ EventPlannerModule.service('EventPlannerService', ['$q', '$http', function($q, $
     this.AUsers = function(args) {
         if(typeof args == 'undefined') args={};
         return $http({
-          url: 'EventPlanner/AUsers',
+          url: 'eventplanner/AUsers',
           method: 'GET',
           params: args
         });
@@ -232,7 +232,7 @@ EventPlannerModule.service('EventPlannerService', ['$q', '$http', function($q, $
     this.VListUsers = function(args) {
         if(typeof args == 'undefined') args={};
         return $http({
-          url: 'EventPlanner/VListUsers',
+          url: 'eventplanner/VListUsers',
           method: 'GET',
           params: args
         });
