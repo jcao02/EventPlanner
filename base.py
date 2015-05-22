@@ -6,8 +6,10 @@ from random import SystemRandom
 from datetime import timedelta
 
 
+
 app = Flask(__name__, static_url_path='')
 app.config.from_object('app.db.config')
+
 manager = Manager(app)
 manager.add_command("runserver", Server(
     use_debugger = True,
@@ -17,9 +19,9 @@ manager.add_command("runserver", Server(
 
 @app.before_request
 def make_session_permanent():
-    session.permanent = True
+    session.permanent              = True
     app.permanent_session_lifetime = timedelta(minutes=45)
-    session.modified = True
+    session.modified               = True
 
 @app.route('/')
 def root():
@@ -65,6 +67,7 @@ def close_dabatase_connection(exception):
     db = getattr(g, 'db', None)
     if db is not None:
         db.close()
+
 
 #Application code ends here
 

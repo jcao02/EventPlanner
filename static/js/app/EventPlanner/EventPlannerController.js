@@ -44,8 +44,8 @@ EventPlannerModule.controller('VHomeController',
         }  
       });
 
-      $scope.AEvents0 = function(requestedEvent) {
-        EventPlannerService.AEvents({"requestedEvent":((typeof requestedEvent === 'object')?JSON.stringify(requestedEvent):requestedEvent)}).then(function (object) {
+      $scope.AEvents = function() {
+        EventPlannerService.AEvents().then(function (object) {
           var msg = object.data["msg"];
           if (msg) flash(msg);
           var label = object.data["label"];
@@ -80,6 +80,9 @@ EventPlannerModule.controller('VHomeController',
               $location.path(label);
           }
         });};
+        $scope.NewEvent = function() {
+            $location.path('/events/new');
+          };
 
     }]);
 EventPlannerModule.controller('VListEventsController', 
@@ -95,9 +98,11 @@ EventPlannerModule.controller('VListEventsController',
             $location.path('/');
         }
       });
+
       $scope.VRegisterEvent0 = function() {
-        $location.path('/VRegisterEvent');
+        $location.path('/event/new');
       };
+
       $scope.VHome1 = function() {
         $location.path('/VHome');
       };

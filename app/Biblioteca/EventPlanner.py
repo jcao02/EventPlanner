@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from flask import request, session, Blueprint, json, g
 
-EventPlanner = Blueprint('EventPlanner', __name__)
+from werkzeug import secure_filename
 
+EventPlanner = Blueprint('EventPlanner', __name__)
 
 @EventPlanner.route('/eventplanner/ACancelReservation')
 def ACancelReservation():
@@ -22,14 +23,28 @@ def ACancelReservation():
     return json.dumps(res)
 
 
+from app.model.event import Event, allowed_file, upload_folder
+import os
 @EventPlanner.route('/eventplanner/ACreateEvent', methods=['POST'])
 def ACreateEvent():
     #Access to POST/PUT fields using request.form['name']
     #Access to file fields using request.files['name']
-    results = [{'label':'/VShowEvent', 'msg':[ur'Evento creado exitosamente']}, {'label':'/VRegisterEvent', 'msg':[ur'Error al crear evento']}, ]
-    res = results[0]
-    #Action code goes here, res should be a list with a label and a message
+    params = request.form.copy()
+    poster = request.files['poster']
 
+    if poster and allowed_file(poster.filename):
+        filename = secure_filename(poster.filename)
+        poster_path = os.path.join(upload_folder(), filename)
+        poster.save(poster_path)
+        params['poster_path'] = poster_path
+
+    event = Event(params)
+
+    if event and event.save():
+        eventid = Event.last_id()
+        res = { 'label' : '/event/'+str(eventid), 'msg':[ur'Evento creado exitosamente'] }
+    else:
+        res = { 'label' : '/events/new', 'msg':[ur'Error al crear evento'] }
 
     #Action code ends here
     if "actor" in res:
@@ -46,8 +61,6 @@ from app.model.user import User
 def ACreateUser():
     #POST/PUT parameters
     params = request.get_json()
-
-
 
     results = [ {'label':'/user/login', 'msg':[ur'Usuario registrado exitosamente']}, 
                 {'label':'/user/new', 'msg':[ur'Error al crear usuario']}, ]
@@ -131,8 +144,7 @@ def AEditEvent():
 @EventPlanner.route('/eventplanner/AEvents')
 def AEvents():
     #GET parameter
-    requestedEvent = request.args['requestedEvent']
-    results = [{'label':'/VListEvents', 'msg':[ur'Se listan los eventos']}, ]
+    results = [{'label':'/events', 'msg':[ur'Se listan los eventos']}, ]
     res = results[0]
     #Action code goes here, res should be a list with a label and a message
 
@@ -211,9 +223,8 @@ def ALoginUser():
 
     user = User(params)
 
-    results = [ {'label':'/VHome', 'msg':[], "actor":user.user }, 
-                {'label':'/VLoginUser', 'msg':[ur'Error al iniciar sesión']}, ]
-
+    results = [ {'label':'/VHome', 'msg':[], "actor": user.user }, 
+                {'label':'/user/login', 'msg':[ur'Error al iniciar sesión']}, ]
 
 
     if user.authenticate():
