@@ -3,8 +3,8 @@ EventPlannerModule.config(function ($routeProvider) {
                 controller: 'ListEventsController',
                 templateUrl: 'app/EventPlanner/event/list.html'
             }).when('/event/:id', {
-                controller: 'VShowEventController',
-                templateUrl: 'app/EventPlanner/VShowEvent.html'
+                controller: 'ShowEventController',
+                templateUrl: 'app/EventPlanner/event/show.html'
             }).when('/events/edit/:id', {
                 controller: 'VEditEventController',
                 templateUrl: 'app/EventPlanner/VEditEvent.html'
@@ -79,8 +79,8 @@ EventPlannerModule.controller('ListEventsController',
         $location.path('/VHome');
       };
 
-      $scope.VShowEvent2 = function(eventId) {
-        $location.path('/VShowEvent/'+eventId);
+      $scope.show = function(eventId) {
+        $location.path('/event/'+eventId);
       };
 
       $scope.ADeleteEvent3 = function() {
@@ -95,4 +95,78 @@ EventPlannerModule.controller('ListEventsController',
           }
         });};
 }]);
+
+EventPlannerModule.controller('ShowEventController', ['$scope', '$location', '$route', 
+                                                      'flash', '$routeParams', 'EventPlannerService', 
+                                                      function ($scope, $location, 
+                                                                $route, flash, $routeParams, 
+                                                                EventPlannerService) {
+      $scope.msg = '';
+      EventPlannerService.VShowEvent({"eventId":$routeParams.id}).then(function (object) {
+        $scope.res = object.data;
+        for (var key in object.data) {
+            $scope[key] = object.data[key];
+        }
+        if ($scope.logout) {
+            $location.path('/');
+        }
+      });
+
+      $scope.VListEvents0 = function() {
+        $location.path('/events');
+      };
+
+      $scope.AReserveEvent1 = function() {
+        EventPlannerService.AReserveEvent().then(function (object) {
+          var msg = object.data["msg"];
+          if (msg) flash(msg);
+          var label = object.data["label"];
+          if (label == '/VShowEvent') {
+              $route.reload();
+          } else {
+              $location.path(label);
+          }
+        });};
+
+      $scope.AUsers2 = function() {
+        EventPlannerService.AUsers().then(function (object) {
+          var msg = object.data["msg"];
+          if (msg) flash(msg);
+          var label = object.data["label"];
+          if (label == '/VShowEvent') {
+              $route.reload();
+          } else {
+              $location.path(label);
+          }
+        });};
+
+      $scope.AGenerateCredentials3 = function() {
+        EventPlannerService.AGenerateCredentials().then(function (object) {
+          var msg = object.data["msg"];
+          if (msg) flash(msg);
+          var label = object.data["label"];
+          if (label == '/VShowEvent') {
+              $route.reload();
+          } else {
+              $location.path(label);
+          }
+        });};
+        
+      $scope.AGenerateCertificate4 = function() {
+        EventPlannerService.AGenerateCertificate().then(function (object) {
+          var msg = object.data["msg"];
+          if (msg) flash(msg);
+          var label = object.data["label"];
+          if (label == '/VShowEvent') {
+              $route.reload();
+          } else {
+              $location.path(label);
+          }
+        });};
+
+      $scope.VShowEvent5 = function(eventId) {
+        $location.path('/VShowEvent/'+eventId);
+      };
+
+    }]);
 

@@ -5,6 +5,8 @@ from werkzeug import secure_filename
 
 EventPlanner = Blueprint('EventPlanner', __name__)
 
+
+
 @EventPlanner.route('/eventplanner/ACancelReservation')
 def ACancelReservation():
     #POST/PUT parameters
@@ -54,6 +56,11 @@ def ACreateEvent():
             session['actor'] = res['actor']
     return json.dumps(res)
 
+from flask import send_from_directory
+
+@EventPlanner.route('/uploads/posters/<filename>')
+def get_file(filename):
+    return send_from_directory(upload_folder(), filename)
 
 from app.model.user import User 
 
@@ -148,16 +155,15 @@ def AEvents():
     res = results[0]
     #Action code goes here, res should be a list with a label and a message
 
-
     #Action code ends here
     if "actor" in res:
         if res['actor'] is None:
             session.pop("actor", None)
         else:
             session['actor'] = res['actor']
+
+
     return json.dumps(res)
-
-
 
 @EventPlanner.route('/eventplanner/AGenerateCertificate')
 def AGenerateCertificate():
@@ -358,9 +364,13 @@ def VListEvents():
     res = {}
     if "actor" in session:
         res['actor']=session['actor']
-    #Action code goes here, res should be a JSON structure
+        #events = Event.all_owned_by(session['actor'])
+        events = Event.all()
+    else:
+        events = Event.all()
 
-
+    res['events'] = events
+ 
     #Action code ends here
     return json.dumps(res)
 
@@ -429,11 +439,19 @@ def VRegisterUser():
 
 @EventPlanner.route('/eventplanner/VShowEvent')
 def VShowEvent():
+
+    print request
+    eventid = request.args.get('eventId')
+
     res = {}
+    if eventid is not None:
+        res['event'] = Event.get(eventid)
+
     if "actor" in session:
         res['actor']=session['actor']
     #Action code goes here, res should be a JSON structure
 
+    print res
 
     #Action code ends here
     return json.dumps(res)

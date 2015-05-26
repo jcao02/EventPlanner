@@ -25,13 +25,31 @@
     </div>
 </nav>
 
-            </tr>
-        </table>
-
-<hr />            </tr>
-        </table>
-
-<hr />
-
+<table class="table table-striped">
+    <thead>
+        <th>#</th>
+        <th>Nombre</th>
+        <th>Fecha</th>
+        <th>Ubicación</th>
+        <th>Cupos</th>
+        <th>Acciones</th>
+    </thead>
+    <tbody ng-repeat="event in events">
+    <tr>
+        <td>{{event.eventid}}</td>
+        <td>{{event.name}}</td>
+        <td>{{event.event_date}}</td>
+        <td>{{event.event_location}}</td>
+        <td><span class="badge">{{event.n_participants}}</span></td>
+        <td class="btn-group" role="group">
+            <a class="btn btn-default" ng-click="show(event.eventid)"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+            <a class="btn btn-primary"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></a>
+            <span ng-if="event.owner == actor">
+                <a class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+            </span>
+        </td>
+    </tr>
+    <tbody>
+</table>
 
 <div id="right"></div>

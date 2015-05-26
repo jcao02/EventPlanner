@@ -16,6 +16,7 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
+# Class Event
 class Event:
     eventid        = -1
     name           = ""
@@ -27,16 +28,18 @@ class Event:
     owner          = ""
 
     def __init__(self, data):
-        print data.keys()
-        if data.get('eventid') != None:
-            self.eventid        = int(data.get('eventid'))
         self.name           = data.get('name')
         self.description    = data.get('description')
         self.poster_path    = data.get('poster_path')
         self.event_date     = data.get('event_date')
         self.event_location = data.get('event_location')
-        self.n_participants = int(data.get('participants'))
         self.owner          = data.get('owner')
+
+        if data.get('participants') != None:
+            self.n_participants = int(data.get('participants'))
+
+        if data.get('eventid') != None:
+            self.eventid        = int(data.get('eventid'))
 
     def save(self): 
         database = get_database()
@@ -74,6 +77,35 @@ class Event:
             return event and len(event) > 0
 
     @staticmethod
+    def get(eventid):
+        sql_request = 'SELECT * FROM %s WHERE eventid="%s"' % (TABLENAME,eventid)
+        print " "
+        print sql_request
+        print " "
+
+        database = get_database()
+        cursor   = database.cursor()
+        cursor.execute(sql_request)
+
+        event_row = cursor.fetchone()
+
+        if event_row is None:
+            return None
+        else:
+            event_data = {'eventid'         : int(event_row[0]), 
+                          'name'            : event_row[1], 
+                          'description'     : event_row[2], 
+                          'poster_path'     : event_row[3], 
+                          'event_date'      : event_row[4], 
+                          'event_location'  : event_row[5], 
+                          'participants'    : int(event_row[6]), 
+                          'owner'           : event_row[7]
+                        }
+
+            event = Event(event_data).__dict__
+            return event
+
+    @staticmethod
     def all():
         sql_request = 'SELECT * FROM %s' % (TABLENAME)
         print " "
@@ -82,7 +114,6 @@ class Event:
 
         database = get_database()
         cursor   = database.cursor()
-
         cursor.execute(sql_request)
 
         events_rows = cursor.fetchall()
@@ -94,11 +125,38 @@ class Event:
                  'poster_path'     : x[3],
                  'event_date'      : x[4],
                  'event_location'  : x[5],
-                 'n_participants'  : int(x[6]),
+                 'participants'    : int(x[6]),
                  'owner'           : x[7]}, events_rows)
         
-        events = map(lambda x: Event(x), events_data)
+        events = map(lambda x: Event(x).__dict__, events_data)
         return events
+
+    @staticmethod
+    def all_owned_by(user):
+        sql_request = 'SELECT * FROM %s WHERE owner="%s"' % (TABLENAME, user)
+        print " "
+        print sql_request
+        print " "
+
+        database = get_database()
+        cursor   = database.cursor()
+        cursor.execute(sql_request)
+
+        events_rows = cursor.fetchall()
+        events_data = map(lambda x:
+                {'eventid'         : int(x[0]),
+                 'name'            : x[1],
+                 'description'     : x[2],
+                 'poster_path'     : x[3],
+                 'event_date'      : x[4],
+                 'event_location'  : x[5],
+                 'participants'    : int(x[6]),
+                 'owner'           : x[7]}, events_rows)
+        
+        events = map(lambda x: Event(x).__dict__, events_data)
+        return events
+
+
 
     @staticmethod
     def last_id():
