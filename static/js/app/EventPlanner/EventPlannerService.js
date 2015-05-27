@@ -129,7 +129,6 @@ EventPlannerModule.service('EventPlannerService', ['$q', '$http', function($q, $
     };
     this.VShowEvent = function(args) {
         if(typeof args == 'undefined') args={};
-        console.log(args); 
         return $http({
             url: 'eventplanner/VShowEvent',
             method: 'GET',

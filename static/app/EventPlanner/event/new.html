@@ -29,7 +29,7 @@
                                       && fEventForm.name.$pristine && fEventSubmitted}">
             <label for="fEvent_name">Nombre</label>
             <input id="fEvent_name" type="text" name="name" 
-                   class="form-control" ng-model="fEvent.name" placeholder="Nombre" />
+                   class="form-control" ng-model="fEvent.name" placeholder="Nombre" required/>
             <p ng-show="fEventSubmitted && fEventForm.name.$invalid" class="help-block">Error en campo Nombre.</p>
         </div>
         <div class="form-group" 
@@ -72,8 +72,6 @@
                    class="form-control" ng-model="fEvent.participants" placeholder="Número de participantes" required/>
             <p ng-show="fEventSubmitted && fEventForm.participants.$invalid" class="help-block">Error en campo Número de participantes.</p>
         </div>
-
-        <input id="fEvent_owner" type="hidden" name="owner" ng-model="fEvent.owner" value="{{usuario.nombre}}" />
 
         <button type="submit" class="btn btn-perso btn-lg btn-block">
             <span class="glyphicon glyphicon-flash"></span>Registrar

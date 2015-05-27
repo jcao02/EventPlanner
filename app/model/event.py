@@ -16,6 +16,23 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
+
+from xhtml2pdf import pisa
+from StringIO import StringIO
+import random
+# Method to create PDF's
+def create_pdf(pdf_data):
+    random.seed()
+    filename = './uploads/posters/tmpPDF' + str(random.randint(0,10000)) + '.pdf'
+    f = open(filename, 'wb')
+
+    try:
+        pisa.CreatePDF(StringIO(pdf_data.encode('utf-8')), f)
+        return filename
+    except Exception as e: 
+        print 'ERROR ',e.message
+        return None
+
 # Class Event
 class Event:
     eventid        = -1
@@ -63,18 +80,45 @@ class Event:
             print e.message
             return False
 
-    def exists(self):
-            sql_request = 'SELECT username FROM %s' % TABLENAME
-            print " "
-            print sql_request
-            print " "
+    def update(self, attrs):
 
-            database = get_database()
-            cursor   = database.cursor()
+        sql_request = 'UPDATE %s SET ' % TABLENAME
 
+        last = len(attrs.keys())
+        for idx, attr in enumerate(attrs.keys()):
+            sql_request += str(attr) + ' = "' + str(attrs[attr]) + '"'
+            if idx != last - 1:
+                sql_request += ', '
+
+        sql_request += 'WHERE eventid="' + str(self.eventid) + '"'
+
+        print " "
+        print sql_request
+        print " "
+
+        database = get_database()
+        cursor   = database.cursor()
+        try:
             cursor.execute(sql_request)
-            event = cursor.fetchone()
-            return event and len(event) > 0
+            database.commit()
+            return True
+        except Exception as e:
+            database.rollback()
+            print e.message
+            return False
+
+    def exists(self):
+        sql_request = 'SELECT username FROM %s' % TABLENAME
+        print " "
+        print sql_request
+        print " "
+
+        database = get_database()
+        cursor   = database.cursor()
+        cursor.execute(sql_request)
+
+        event = cursor.fetchone()
+        return event and len(event) > 0
 
     @staticmethod
     def get(eventid):
@@ -102,7 +146,7 @@ class Event:
                           'owner'           : event_row[7]
                         }
 
-            event = Event(event_data).__dict__
+            event = Event(event_data)
             return event
 
     @staticmethod
@@ -128,7 +172,7 @@ class Event:
                  'participants'    : int(x[6]),
                  'owner'           : x[7]}, events_rows)
         
-        events = map(lambda x: Event(x).__dict__, events_data)
+        events = map(lambda x: Event(x), events_data)
         return events
 
     @staticmethod
@@ -153,7 +197,7 @@ class Event:
                  'participants'    : int(x[6]),
                  'owner'           : x[7]}, events_rows)
         
-        events = map(lambda x: Event(x).__dict__, events_data)
+        events = map(lambda x: Event(x), events_data)
         return events
 
 
