@@ -509,8 +509,8 @@ def VShowEvent():
         res['event'] = Event.get(eventid).__dict__
 
     if "actor" in session:
-        res['actor']=session['actor']
-        assistance = Assistance.get(res['actor'], eventid)
+        res['actor'] = session['actor']
+        assistance   = Assistance.get(res['actor'], eventid)
         if assistance is None:
             res['reserved'] = 1
         else:

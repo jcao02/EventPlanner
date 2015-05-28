@@ -59,3 +59,7 @@ venv
 
 # Ignore database files
 *.db
+tmp
+tmp/
+uploads
+uploads/*
