@@ -43,12 +43,32 @@
   <br>
     <h1>
       <p style="text-indent: 2em;"> Nombre de Usuario: {{user.user}} </p>
-      <p style="text-indent: 2em;"> Eventos Creados: </p>
-      <p style="text-indent: 2em;"> Eventos Asistidos: </p>
     </h1>
      
   </body>
 </html> 
+
+<br><br>
+
+
+<table class="table table-striped">
+    <thead>
+        <th>Eventos Creados</th>
+        <th>Eventos Asistidos</th>
+    </thead>
+    <tbody ng-repeat="event in created_event">
+    <tr>
+        <td>{{event}}</td>
+    </tr>
+    <tbody>
+
+    <tbody ng-repeat="event in assisted_event">
+    <tr>
+        <td>{{event}}</td>
+    </tr>
+    <tbody>
+
+</table>
 
 
 

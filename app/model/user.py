@@ -3,6 +3,7 @@ from base import get_database
 
 TABLENAME = 'User'
 ASSISTANCE_TABLENAME = 'Assitance'
+EVENT_TABLENAME = 'Event'
 
 class User:
     user     = ""
@@ -122,7 +123,7 @@ class User:
         cursor   = database.cursor()
         cursor.execute(sql_request)
 
-        assited_data = {}
+        assited_data = []
 
         user_row = cursor.fetchone()
         counter = 0
@@ -132,9 +133,35 @@ class User:
 
         
         while (user_row <> None):
-            assited_data[str(counter)] = user_row[1]
+            assited_data.append(user_row[0])
             user_row = cursor.fetchone()
-            counter = counter + 1
         
-        data = User(assited_data).__dict__
-        return data
+        #data = User(assited_data).__dict__
+        return assited_data
+
+    @staticmethod
+    def get_created(username):
+        sql_request = 'SELECT name FROM %s WHERE owner="%s"' % (EVENT_TABLENAME,username)
+        print " "
+        print sql_request
+        print " "
+
+        database = get_database()
+        cursor   = database.cursor()
+        cursor.execute(sql_request)
+
+        created_data = []
+
+        user_row = cursor.fetchone()
+
+        if user_row is None:
+            return None
+
+        
+        while (user_row <> None):
+            created_data.append(user_row[0])
+            user_row = cursor.fetchone()
+        
+        #data = User(created_data).__dict__
+        return created_data
+

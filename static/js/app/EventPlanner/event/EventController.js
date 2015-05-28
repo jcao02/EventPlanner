@@ -12,7 +12,8 @@ EventPlannerModule.config(function ($routeProvider) {
                 controller: 'RegisterEventController',
                 templateUrl: 'app/EventPlanner/event/new.html'
  
-            })
+            });
+
 }); 
 
 EventPlannerModule.controller('RegisterEventController', 
@@ -96,11 +97,11 @@ EventPlannerModule.controller('ListEventsController',
         });};
 }]);
 
-EventPlannerModule.controller('ShowEventController', ['$scope', '$location', '$route', 
-                                                      'flash', '$routeParams', 'EventPlannerService', 
-                                                      function ($scope, $location, 
-                                                                $route, flash, $routeParams, 
-                                                                EventPlannerService) {
+EventPlannerModule.controller('ShowEventController', 
+                              ['$scope', '$location', '$route', 
+                               'flash', '$routeParams', 'EventPlannerService', 
+                               function ($scope, $location, $route, flash, 
+                                         $routeParams, EventPlannerService) {
       $scope.msg = '';
       EventPlannerService.VShowEvent({"eventId":$routeParams.id}).then(function (object) {
         $scope.res = object.data;
@@ -116,8 +117,9 @@ EventPlannerModule.controller('ShowEventController', ['$scope', '$location', '$r
         $location.path('/events');
       };
 
-      $scope.AReserveEvent1 = function() {
-        EventPlannerService.AReserveEvent().then(function (object) {
+      // Reserve the event
+      $scope.ReserveEvent = function() {
+        EventPlannerService.AReserveEvent({"eventId" : $routeParams.id}).then(function (object) {
           var msg = object.data["msg"];
           if (msg) flash(msg);
           var label = object.data["label"];
@@ -128,6 +130,20 @@ EventPlannerModule.controller('ShowEventController', ['$scope', '$location', '$r
           }
         });};
 
+      $scope.CancelReservation = function() {
+        EventPlannerService.ACancelReservation({"eventId" : $routeParams.id}).then(function (object) {
+          var msg = object.data["msg"];
+          if (msg) flash(msg);
+          var label = object.data["label"];
+          if (label == '/VShowEvent') {
+              $route.reload();
+          } else {
+              $location.path(label);
+          }
+        });
+      
+      }
+      // List the users that will assists to this event
       $scope.AUsers2 = function() {
         EventPlannerService.AUsers().then(function (object) {
           var msg = object.data["msg"];
@@ -140,33 +156,36 @@ EventPlannerModule.controller('ShowEventController', ['$scope', '$location', '$r
           }
         });};
 
-      $scope.AGenerateCredentials3 = function() {
-        EventPlannerService.AGenerateCredentials().then(function (object) {
+      // Generate the credentials 
+      $scope.GenerateCredentials = function() {
+        EventPlannerService.AGenerateCredentials({"eventId" : $routeParams.id}).then(function (object) {
           var msg = object.data["msg"];
           if (msg) flash(msg);
-          var label = object.data["label"];
-          if (label == '/VShowEvent') {
-              $route.reload();
-          } else {
-              $location.path(label);
-          }
+          var credentials_link = object.data["credentials"]
+          var download_link    = document.createElement('a');
+          download_link.name   = 'credenciales.pdf';
+          download_link.href   = credentials_link;
+          download_link.target = "_blank";
+          download_link.click();
         });};
         
-      $scope.AGenerateCertificate4 = function() {
-        EventPlannerService.AGenerateCertificate().then(function (object) {
+      // Generate the certificate 
+      $scope.GenerateCertificate = function() {
+        EventPlannerService.AGenerateCertificate({"eventId" : $routeParams.id}).then(function (object) {
           var msg = object.data["msg"];
           if (msg) flash(msg);
           var label = object.data["label"];
-          if (label == '/VShowEvent') {
-              $route.reload();
-          } else {
-              $location.path(label);
-          }
-        });};
+          var certificate_link = object.data["certificate"]
+
+          var download_link    = document.createElement('a');
+          download_link.name   = 'certificado.pdf';
+          download_link.href   = certificate_link;
+          download_link.target = "_blank";
+          download_link.click();
+      });};
 
       $scope.VShowEvent5 = function(eventId) {
         $location.path('/VShowEvent/'+eventId);
       };
 
     }]);
-

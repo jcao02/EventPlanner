@@ -9,11 +9,16 @@ EventPlanner = Blueprint('EventPlanner', __name__)
 
 @EventPlanner.route('/eventplanner/ACancelReservation')
 def ACancelReservation():
-    #POST/PUT parameters
-    params = request.get_json()
-    results = [{'label':'/VShowEvent', 'msg':[ur'Reservación exitosamente cancelada']}, {'label':'/VShowEvent', 'msg':[ur'Error al cancelar reservación']}, ]
-    res = results[0]
-    #Action code goes here, res should be a list with a label and a message
+
+    eventid = request.args.get('eventId')
+    if eventid is None:
+        res = {'label':'/VShowEvent', 'msg':[ur'Error al cancelar la reserva del evento']}
+    else:
+        event = Event.get(eventid)
+        if event.update({ 'n_participants' : event.n_participants + 1 }):
+            res = {'label':'/VShowEvent', 'msg':[ur'Reserva cancelada exitosamente']}
+        else:
+            res = {'label':'/VShowEvent', 'msg':[ur'Error al cancelar la reserva del evento']}
 
 
     #Action code ends here
@@ -32,13 +37,16 @@ def ACreateEvent():
     #Access to POST/PUT fields using request.form['name']
     #Access to file fields using request.files['name']
     params = request.form.copy()
-    poster = request.files['poster']
+    poster = request.files.get('poster')
 
-    if poster and allowed_file(poster.filename):
+    if poster != None and allowed_file(poster.filename):
         filename = secure_filename(poster.filename)
         poster_path = os.path.join(upload_folder(), filename)
         poster.save(poster_path)
         params['poster_path'] = poster_path
+
+    if "actor" in session:
+        params['owner'] = session['actor']
 
     event = Event(params)
 
@@ -47,6 +55,7 @@ def ACreateEvent():
         res = { 'label' : '/event/'+str(eventid), 'msg':[ur'Evento creado exitosamente'] }
     else:
         res = { 'label' : '/events/new', 'msg':[ur'Error al crear evento'] }
+
 
     #Action code ends here
     if "actor" in res:
@@ -165,16 +174,30 @@ def AEvents():
 
     return json.dumps(res)
 
+from flask import render_template
+from app.model.event import create_pdf
 @EventPlanner.route('/eventplanner/AGenerateCertificate')
 def AGenerateCertificate():
-    #POST/PUT parameters
-    params = request.get_json()
-    results = [{'label':'/VCertificate', 'msg':[ur'Certificado exitosamente generado']}, {'label':'/VShowEvent', 'msg':[ur'Error al generar certificado']}, ]
-    res = results[0]
-    #Action code goes here, res should be a list with a label and a message
 
+    results = [{'label':'/VShowEvent', 'msg':[ur'Certificado exitosamente generado']}, {'label':'/VShowEvent', 'msg':[ur'Error al generar certificado']}, ]
+    eventid = request.args.get('eventId')
 
-    #Action code ends here
+    if eventid is None:
+        res = results[1]
+    else:
+
+        event = Event.get(eventid)
+        user  = session.get('actor')
+        if user is None:
+            user = "Default"
+        pdf = create_pdf(render_template('certificate.html', event=event, user=user))
+        
+        if pdf is None:
+            res = results[1]
+        else:
+            res = results[0]
+            res['certificate'] = pdf
+
     if "actor" in res:
         if res['actor'] is None:
             session.pop("actor", None)
@@ -187,13 +210,25 @@ def AGenerateCertificate():
 @EventPlanner.route('/eventplanner/AGenerateCredentials')
 def AGenerateCredentials():
     #POST/PUT parameters
-    params = request.get_json()
-    results = [{'label':'/VCredential', 'msg':[ur'Credenciales exitosamente generadas']}, {'label':'/VShowEvent', 'msg':[ur'Error al generar credenciales']}, ]
-    res = results[0]
-    #Action code goes here, res should be a list with a label and a message
 
+    results = [{'label':'/VShowEvent', 'msg':[ur'Credenciales exitosamente generadas']}, {'label':'/VShowEvent', 'msg':[ur'Error al generar credenciales']}, ]
+    eventid = request.args.get('eventId')
 
-    #Action code ends here
+    if eventid is None:
+        res = results[1]
+    else:
+        event = Event.get(eventid)
+        user  = session.get('actor')
+        if user is None:
+            user = "Default"
+        pdf = create_pdf(render_template('credentials.html', event=event, user=user))
+        
+        if pdf is None:
+            res = results[1]
+        else:
+            res = results[0]
+            res['credentials'] = pdf
+
     if "actor" in res:
         if res['actor'] is None:
             session.pop("actor", None)
@@ -249,13 +284,24 @@ def ALoginUser():
 
 
 
+from app.model.assistance import Assistance
 @EventPlanner.route('/eventplanner/AReserveEvent')
 def AReserveEvent():
-    #POST/PUT parameters
-    params = request.get_json()
-    results = [{'label':'/VShowEvent', 'msg':[ur'Evento reservado exitosamente']}, {'label':'/VShowEvent', 'msg':[ur'Error al reservar evento']}, ]
-    res = results[0]
-    #Action code goes here, res should be a list with a label and a message
+    eventid = request.args.get('eventId')
+    if eventid is None:
+        res = {'label':'/VShowEvent', 'msg':[ur'Error al reservar evento']}
+    else:
+        event = Event.get(eventid)
+        assistance = Assistance.get(user, event.eventid)
+        
+        if assistance != None and event.update({ 'n_participants' : event.n_participants - 1 }):
+            assistance = Assistance(user, event.eventid)
+            if assistance.save():
+                res = {'label':'/VShowEvent', 'msg':[ur'Evento reservado exitosamente']}
+            else:
+                res = {'label':'/VShowEvent', 'msg':[ur'Error al reservar evento']}
+        else:
+            res = {'label':'/VShowEvent', 'msg':[ur'Error al reservar evento']}
 
 
     #Action code ends here
@@ -309,6 +355,7 @@ def AVerifyAssitance():
 
 @EventPlanner.route('/eventplanner/VCertificate')
 def VCertificate():
+
     res = {}
     if "actor" in session:
         res['actor']=session['actor']
@@ -353,7 +400,6 @@ def VHome():
         res['actor']=session['actor']
     #Action code goes here, res should be a JSON structure
 
-
     #Action code ends here
     return json.dumps(res)
 
@@ -364,10 +410,10 @@ def VListEvents():
     res = {}
     if "actor" in session:
         res['actor']=session['actor']
-        #events = Event.all_owned_by(session['actor'])
-        events = Event.all()
+        #events = map(lambda x: x.__dict__, Event.all_owned_by(session['actor']))
+        events = map(lambda x: x.__dict__, Event.all())
     else:
-        events = Event.all()
+        events = map(lambda x: x.__dict__, Event.all())
 
     res['events'] = events
  
@@ -450,7 +496,7 @@ def VShowEvent():
 
     res = {}
     if eventid is not None:
-        res['event'] = Event.get(eventid)
+        res['event'] = Event.get(eventid).__dict__
 
     if "actor" in session:
         res['actor']=session['actor']
@@ -476,8 +522,6 @@ def VShowUser():
     if "actor" in session:
         res['actor']=session['actor']
     #Action code goes here, res should be a JSON structure
-
-    print "RES", res
 
     #Action code ends here
     return json.dumps(res)
