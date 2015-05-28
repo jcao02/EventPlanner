@@ -1,0 +1,8 @@
+- [ ] Cambiar boton "Reservar" o "Cancelar reserva" cuando "reserve" sea 0 o 1 (respectivamente)
+- [ ] Listar eventos a los que asiste un usuario en el show de usuario
+- [ ] Agregar acción de listar participantes en el show de event
+- [ ] Mostrar generar credenciales si está reservado el evento (reserved == 1)
+- [ ] Mostrar generar certificado si la columna "assisted" de Assistance es true en el usuario
+- [ ] Crear acción para marcar usuario como asistido en el evento X
+
+
