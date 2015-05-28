@@ -273,7 +273,7 @@ def AUsers():
     #POST/PUT parameters
     params = request.get_json()
 
-    results = [{'label':'/users/1', 'msg':[ur'Se listan los usuarios']  }, ]
+    results = [{'label':'/users', 'msg':[ur'Se listan los usuarios']  }, ]
     res = results[0]
     #Action code goes here, res should be a list with a label and a message
 
@@ -378,12 +378,17 @@ def VListEvents():
 
 @EventPlanner.route('/eventplanner/VListUsers')
 def VListUsers():
-    params = request.args
 
-    if params["requestedUser"] == "1":
+    print "HOLA"
+    params = request.args
+    print request.args
+    eventid = params.get('requestedUser')
+    print eventid
+
+    if eventid is None:
         users = User.all()
     else:
-        users = User.from_event(1)
+        users = User.from_event(eventid)
     
 
     res = { 'users' : users }
@@ -456,9 +461,26 @@ def VShowEvent():
     #Action code ends here
     return json.dumps(res)
 
+@EventPlanner.route('/eventplanner/VShowUser')
+def VShowUser():
 
+    print request
+    userId = request.args.get('user')
 
+    res = {}
+    if userId is not None:
+        res['user'] = User.get(userId)
+        res['created_event'] = User.get_created(userId)
+        res['assisted_event'] = User.get_assisted(userId)
 
+    if "actor" in session:
+        res['actor']=session['actor']
+    #Action code goes here, res should be a JSON structure
+
+    print "RES", res
+
+    #Action code ends here
+    return json.dumps(res)
 
 #Use case code starts here
 

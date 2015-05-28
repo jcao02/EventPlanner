@@ -172,3 +172,31 @@ class Event:
         event = cursor.fetchone()
 
         return event[0] or None
+
+    @staticmethod
+    def get_created(username):
+        sql_request = 'SELECT name FROM %s WHERE owner="%s"' % (TABLENAME,username)
+        print " "
+        print sql_request
+        print " "
+
+        database = get_database()
+        cursor   = database.cursor()
+        cursor.execute(sql_request)
+
+        created_data = {}
+
+        user_row = cursor.fetchone()
+        counter = 0
+
+        if user_row is None:
+            return None
+
+        
+        while (user_row <> None):
+            assited_data[str(counter)] = user_row[1]
+            user_row = cursor.fetchone()
+            counter = counter + 1
+        
+        data = User(assited_data).__dict__
+        return data

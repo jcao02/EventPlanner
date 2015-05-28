@@ -141,6 +141,20 @@ EventPlannerModule.service('EventPlannerService', ['$q', '$http', function($q, $
         //    return deferred.promise;
     };
 
+    this.VShowUser = function(args) {
+        if(typeof args == 'undefined') args={};
+        console.log(args); 
+        return $http({
+            url: 'eventplanner/VShowUser',
+            method: 'GET',
+            params: args
+        });
+        //    var res = {};
+        //    var deferred = $q.defer();
+        //    deferred.resolve(res);
+        //    return deferred.promise;
+    };
+
     this.ADeleteUser = function(args) {
         if(typeof args == 'undefined') args={};
         return $http({
