@@ -24,6 +24,22 @@ class Assistance:
             database.rollback()
             print e.message
             return False
+    
+    def delete(self):
+        sql_request = 'DELETE FROM %s WHERE participant="%s" AND event="%s"' % (TABLENAME,user,event)
+        print " "
+        print sql_request
+        print " "
+        try: 
+            database = get_database()
+            cursor.execute(sql_request)
+            database.commit()
+            return True
+        except Exception as e: 
+            database.rollback()
+            print e.message
+            return False
+
 
     @staticmethod
     def get(user, event):

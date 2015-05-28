@@ -14,8 +14,15 @@ def ACancelReservation():
     if eventid is None:
         res = {'label':'/VShowEvent', 'msg':[ur'Error al cancelar la reserva del evento']}
     else:
-        event = Event.get(eventid)
-        if event.update({ 'n_participants' : event.n_participants + 1 }):
+        user = session.get('actor')
+        if user is None:
+            user = "Default"
+
+        event      = Event.get(eventid)
+        assistance = Assistance.get(user, event.eventid)
+
+        if assistance is not None and event.update({ 'n_participants' : event.n_participants + 1 }):
+            assistance.delete()
             res = {'label':'/VShowEvent', 'msg':[ur'Reserva cancelada exitosamente']}
         else:
             res = {'label':'/VShowEvent', 'msg':[ur'Error al cancelar la reserva del evento']}
@@ -291,10 +298,14 @@ def AReserveEvent():
     if eventid is None:
         res = {'label':'/VShowEvent', 'msg':[ur'Error al reservar evento']}
     else:
-        event = Event.get(eventid)
+        user = session.get('actor')
+        if user is None:
+            user = "Default"
+
+        event      = Event.get(eventid)
         assistance = Assistance.get(user, event.eventid)
         
-        if assistance != None and event.update({ 'n_participants' : event.n_participants - 1 }):
+        if assistance is None and event.update({ 'n_participants' : event.n_participants - 1 }):
             assistance = Assistance(user, event.eventid)
             if assistance.save():
                 res = {'label':'/VShowEvent', 'msg':[ur'Evento reservado exitosamente']}
@@ -491,7 +502,6 @@ def VRegisterUser():
 @EventPlanner.route('/eventplanner/VShowEvent')
 def VShowEvent():
 
-    print request
     eventid = request.args.get('eventId')
 
     res = {}
@@ -500,6 +510,11 @@ def VShowEvent():
 
     if "actor" in session:
         res['actor']=session['actor']
+        assistance = Assistance.get(res['actor'], eventid)
+        if assistance is None:
+            res['reserved'] = 1
+        else:
+            res['reserved'] = 0
     #Action code goes here, res should be a JSON structure
 
     print res
