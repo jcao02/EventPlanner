@@ -58,7 +58,7 @@
         <div class="btn-group" role="group">
             <a class="btn btn-primary" ng-click="ReserveEvent()" ><span class="glyphicon glyphicon-calendar" aria-hidden="true"> Reservar</span></a>
             <!--<a class="btn btn-danger" ng-click="CancelReservation()" ><span class="glyphicon glyphicon-remove" aria-hidden="true"> Reservación</span></a>-->
-            <a class="btn btn-info"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"> Participantes</span></a>
+            <a class="btn btn-info" ng-click="AUsers2(event.eventid)"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"> Participantes</span></a>
         </div>
 
     </div>
@@ -90,4 +90,3 @@
         <p>{{event.description}}</p>
     </div>
 </div>
-

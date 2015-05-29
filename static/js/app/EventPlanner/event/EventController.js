@@ -11,8 +11,8 @@ EventPlannerModule.config(function ($routeProvider) {
             }).when('/events/new', {
                 controller: 'RegisterEventController',
                 templateUrl: 'app/EventPlanner/event/new.html'
- 
-            });
+            });       
+
 
 }); 
 
@@ -144,16 +144,18 @@ EventPlannerModule.controller('ShowEventController',
       
       }
       // List the users that will assists to this event
-      $scope.AUsers2 = function() {
-        EventPlannerService.AUsers().then(function (object) {
+      $scope.AUsers2 = function(eventId) {
+        EventPlannerService.VListUsers({"eventId" : $routeParams.id}).then(function (object) {
           var msg = object.data["msg"];
           if (msg) flash(msg);
-          var label = object.data["label"];
+
+          $location.path('/users/'+eventId);
+          /*var label = object.data["label"];
           if (label == '/VShowEvent') {
               $route.reload();
           } else {
               $location.path(label);
-          }
+          }*/
         });};
 
       // Generate the credentials 

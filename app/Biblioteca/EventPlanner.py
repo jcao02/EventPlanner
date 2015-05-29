@@ -294,6 +294,7 @@ def ALoginUser():
 from app.model.assistance import Assistance
 @EventPlanner.route('/eventplanner/AReserveEvent')
 def AReserveEvent():
+
     eventid = request.args.get('eventId')
     if eventid is None:
         res = {'label':'/VShowEvent', 'msg':[ur'Error al reservar evento']}
@@ -321,6 +322,8 @@ def AReserveEvent():
             session.pop("actor", None)
         else:
             session['actor'] = res['actor']
+
+    print "AQUI", res
     return json.dumps(res)
 
 
@@ -331,7 +334,13 @@ def AUsers():
     params = request.get_json()
 
     results = [{'label':'/users', 'msg':[ur'Se listan los usuarios']  }, ]
+
+
+
     res = results[0]
+    #print "ANDREA", res
+
+
     #Action code goes here, res should be a list with a label and a message
 
 
@@ -436,7 +445,6 @@ def VListEvents():
 @EventPlanner.route('/eventplanner/VListUsers')
 def VListUsers():
 
-    print "HOLA"
     params = request.args
     print request.args
     eventid = params.get('requestedUser')
@@ -446,7 +454,7 @@ def VListUsers():
         users = User.all()
     else:
         users = User.from_event(eventid)
-    
+
 
     res = { 'users' : users }
 

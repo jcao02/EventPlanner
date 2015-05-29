@@ -1,3 +1,6 @@
+from flask import g
+from base import get_database
+
 TABLENAME = "Assitance"
 class Assistance:
     user  = ""

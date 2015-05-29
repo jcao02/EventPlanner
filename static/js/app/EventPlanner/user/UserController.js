@@ -17,7 +17,10 @@ EventPlannerModule.config(function ($routeProvider) {
     }).when('/users/edit/:user', {
         controller: 'VEditUserController',
         templateUrl: 'app/EventPlanner/user/edit.html'
-    })
+    }).when('/event/participants/:id', {
+        controller: 'ListUserController',
+        templateUrl: 'app/EventPlanner/user/list.html'
+    });
 }); 
 
 EventPlannerModule.controller('CreateUserController', 
@@ -195,8 +198,7 @@ EventPlannerModule.controller('ShowUserController', ['$scope', '$location', '$ro
               $location.path(label);
           }
         });};
-      
-
-
-
+      $scope.VShowEvent = function(eventid) {
+        $location.path('/event/'+eventid);
+      };
 }]);

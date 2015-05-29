@@ -74,14 +74,17 @@ class User:
 
     @staticmethod
     def from_event(event):
+    
         sql_request = 'SELECT participant FROM %s WHERE event="%s"' % ( ASSISTANCE_TABLENAME, event )
         print " "
         print sql_request
         print " "
+           
 
         database = get_database()
         cursor   = database.cursor()
 
+        cursor.execute(sql_request2)
         cursor.execute(sql_request)
 
         users = cursor.fetchall()
@@ -121,19 +124,22 @@ class User:
 
         database = get_database()
         cursor   = database.cursor()
+        cur   = database.cursor()
         cursor.execute(sql_request)
 
         assited_data = []
 
         user_row = cursor.fetchone()
-        counter = 0
 
         if user_row is None:
             return None
 
-        
         while (user_row <> None):
-            assited_data.append(user_row[0])
+            sql_request3 = 'SELECT name FROM %s WHERE eventid="%s"' % (EVENT_TABLENAME,user_row[0])
+            cur.execute(sql_request3)
+            event_name = cur.fetchone()
+
+            assited_data.append((event_name[0], user_row[0]))
             user_row = cursor.fetchone()
         
         #data = User(assited_data).__dict__
@@ -141,7 +147,7 @@ class User:
 
     @staticmethod
     def get_created(username):
-        sql_request = 'SELECT name FROM %s WHERE owner="%s"' % (EVENT_TABLENAME,username)
+        sql_request = 'SELECT name, eventid FROM %s WHERE owner="%s"' % (EVENT_TABLENAME,username)
         print " "
         print sql_request
         print " "
@@ -159,7 +165,7 @@ class User:
 
         
         while (user_row <> None):
-            created_data.append(user_row[0])
+            created_data.append((user_row[0],user_row[1]))
             user_row = cursor.fetchone()
         
         #data = User(created_data).__dict__

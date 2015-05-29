@@ -54,23 +54,41 @@
 <table class="table table-striped">
     <thead>
         <th>Eventos Creados</th>
-        <th>Eventos Asistidos</th>
+        <th>Acciones</th>
     </thead>
     <tbody ng-repeat="event in created_event">
     <tr>
-        <td>{{event}}</td>
+        <td>{{event[0]}}</td>
+
+        <td class="btn-group" role="group">
+            <a class="btn btn-default" ng-click="VShowEvent(event[1])"><span class="glyphicon glyphicon-eye-open" aria-hidden="true">
+                </span>
+            </a>
+        </td>
+
     </tr>
     <tbody>
-
-    <tbody ng-repeat="event in assisted_event">
-    <tr>
-        <td>{{event}}</td>
-    </tr>
-    <tbody>
-
 </table>
 
 
+<table class="table table-striped">
+    <thead>
+      <th>Eventos Asistidos</th>
+      <th>Acciones</th>
+    <tbody ng-repeat="event1 in assisted_event">
+    <tr>
+        
+        <td>
+          {{event1[0]}}
+        </td>
+         <td class="btn-group" role="group">
+            <a class="btn btn-default" ng-click="VShowEvent(event1[1])"><span class="glyphicon glyphicon-eye-open" aria-hidden="true">
+                </span>
+            </a>
+        </td>
+      
+    </tr>
+    <tbody>
 
 
 <div id="right"></div>
