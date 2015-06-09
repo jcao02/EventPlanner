@@ -3,6 +3,7 @@
 - [X] Agregar acción de listar participantes en el show de event
 - [ ] Mostrar generar credenciales si está reservado el evento (reserved == 1)
 - [ ] Mostrar generar certificado si la columna "assisted" de Assistance es true en el usuario
-- [ ] Crear acción para marcar usuario como asistido en el evento X
-
-
+- [ ] Crear acción para marcar usuario como asistido en el evento X (verifyAssistance)
+- [ ] Hacer accion de logout
+- [ ] Hacer vistas mas lindas
+- [ ] Manejar cookie de session 
