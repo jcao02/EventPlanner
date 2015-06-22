@@ -16,11 +16,7 @@
 
                 <li><a ng-click="VListEvents()">
                   Mis Eventos</a></li> 
-
-                 <li><a ng-click="AVerifyAssitance1()"
-                       ng-show="actor=='admin' || false">
-                  VerificarAsistencia</a></li>   }
-                <li>       
+    
 
             </ul>
             <ul class="nav navbar-nav navbar-right">
@@ -46,12 +42,35 @@
     </thead>
     <tbody ng-repeat="user in users">
     <tr>
-        <td>{{user}}</td>
-        <td class="btn-group" role="group">
-            <a class="btn btn-default" ng-click="show(user)"><span class="glyphicon glyphicon-eye-open" aria-hidden="true">
+        <td>{{user[0]}}</td>
+
+            <td class="btn-group" role="group">
+                <a class="btn btn-default" ng-click="show(user)"><span class="glyphicon glyphicon-eye-open" aria-hidden="true">
+                    </span>
+                </a>
+
+               <span ng-if="by_event">
+
+                <span ng-if= "actor == owner">
+                       
+                    <span ng-if="user[1] == 0" >
+                       <a class="btn btn-default" ng-click="AVerifyAssitance1(user[0])"><span class="glyphicon glyphicon-ok" aria-hidden="true">
+                            </span>
+                        </a>
+                    </span>
+
+                    <span ng-if="user[1] == 1">
+                        <a class="btn btn-default" ng-click="ACancelAssitance1(user[0])"><span class="glyphicon glyphicon-remove" aria-hidden="true">
+                            </span>
+                        </a>  
+                    </span>
+
+
                 </span>
-            </a>
-        </td>
+            </span>
+            </td>
+
+
     </tr>
     <tbody>
 </table>

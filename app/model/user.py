@@ -68,14 +68,12 @@ class User:
         cursor.execute(sql_request)
 
         users = cursor.fetchall()
-
-        users = map(lambda x: x[0], users)
         return users
 
     @staticmethod
     def from_event(event):
     
-        sql_request = 'SELECT participant FROM %s WHERE event="%s"' % ( ASSISTANCE_TABLENAME, event )
+        sql_request = 'SELECT participant, assited, event FROM %s WHERE event="%s"' % ( ASSISTANCE_TABLENAME, event )
         print " "
         print sql_request
         print " "
@@ -84,11 +82,10 @@ class User:
         database = get_database()
         cursor   = database.cursor()
 
-        cursor.execute(sql_request2)
         cursor.execute(sql_request)
 
         users = cursor.fetchall()
-        users = map(lambda x: x[0], users)
+        #users = map(lambda x: x[0], users)
         return users
 
     @staticmethod
@@ -170,4 +167,45 @@ class User:
         
         #data = User(created_data).__dict__
         return created_data
+
+    @staticmethod
+    def verify_assistance(username):
+        sql_request = 'UPDATE %s SET assited = 1 WHERE participant = "%s"' % (ASSISTANCE_TABLENAME, username)
+        print " "
+        print sql_request
+        print " "
+
+        try: 
+            database = get_database()
+            cursor   = database.cursor()
+            cursor.execute(sql_request)
+            database.commit()
+            return True
+
+        except Exception as e: 
+            database.rollback()
+            print e.message
+            return False
+
+    @staticmethod
+    def cancel_assistance(username):
+        sql_request = 'UPDATE %s SET assited = 0 WHERE participant = "%s"' % (ASSISTANCE_TABLENAME, username)
+        print " "
+        print sql_request
+        print " "
+
+        try: 
+            database = get_database()
+            cursor   = database.cursor()
+            cursor.execute(sql_request)
+            database.commit()
+            return True
+
+        except Exception as e: 
+            database.rollback()
+            print e.message
+            return False
+
+
+        
 

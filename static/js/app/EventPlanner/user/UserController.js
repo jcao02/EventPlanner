@@ -95,6 +95,7 @@ EventPlannerModule.controller('LoginUserController',
         $scope.fLoginSubmitted = true;
         if (isValid) {
           EventPlannerService.ALoginUser($scope.fLogin).then(function (object) {
+              console.log($scope.fLogin);
               var msg = object.data["msg"];
               if (msg) flash(msg);
               var label = object.data["label"];
@@ -120,6 +121,7 @@ EventPlannerModule.controller('ListUsersController',
       EventPlannerService.VListUsers({"requestedUser":$routeParams.requestedUser}).then(function (object) {
         $scope.res = object.data;      
         $scope.users = object.data["users"];
+        console.log($scope);
         for (var key in object.data) {
             $scope[key] = object.data[key];
         }
@@ -138,8 +140,8 @@ EventPlannerModule.controller('ListUsersController',
               $location.path(label);
           }
         });};
-      $scope.AVerifyAssitance1 = function() {
-        EventPlannerService.AVerifyAssitance().then(function (object) {
+      $scope.AVerifyAssitance1 = function(user) {
+        EventPlannerService.AVerifyAssitance({'user': user}).then(function (object) {
           var msg = object.data["msg"];
           if (msg) flash(msg);
           var label = object.data["label"];
@@ -149,6 +151,18 @@ EventPlannerModule.controller('ListUsersController',
               $location.path(label);
           }
         });};
+    $scope.ACancelAssitance1 = function(user) {
+        EventPlannerService.ACancelAssitance({'user': user}).then(function (object) {
+          var msg = object.data["msg"];
+          if (msg) flash(msg);
+          var label = object.data["label"];
+          if (label == '/VListUsers') {
+              $route.reload();
+          } else {
+              $location.path(label);
+          }
+        });};
+
       $scope.show = function(username) {
         console.log(username);
         $location.path('/users/show/'+username);

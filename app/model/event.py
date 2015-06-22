@@ -216,3 +216,18 @@ class Event:
         event = cursor.fetchone()
 
         return event[0] or None
+
+    @staticmethod
+    def get_owner(event):
+        sql_request = 'SELECT owner FROM %s WHERE eventid="%s"' % (TABLENAME, event)
+        print " "
+        print sql_request
+        print " "
+
+        database = get_database()
+        cursor   = database.cursor()
+        cursor.execute(sql_request)
+       
+        owner_row = cursor.fetchone()
+
+        return owner_row
