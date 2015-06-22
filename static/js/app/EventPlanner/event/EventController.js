@@ -56,6 +56,10 @@ EventPlannerModule.controller('RegisterEventController',
           });
         }
       };
+
+      $scope.VHome1 = function() {
+        $location.path('/VHome');
+      };
 }]);
 
 EventPlannerModule.controller('ListEventsController', 
@@ -188,6 +192,14 @@ EventPlannerModule.controller('ShowEventController',
 
       $scope.VShowEvent5 = function(eventId) {
         $location.path('/VShowEvent/'+eventId);
+      };
+
+      $scope.VHome1 = function() {
+        $location.path('/VHome');
+      };
+
+      $scope.VListEvents = function() {
+        $location.path('/events');
       };
 
     }]);
