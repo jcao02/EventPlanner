@@ -80,6 +80,25 @@ class Event:
             print e.message
             return False
 
+    def delete(self):
+        database = get_database()
+        cursor   = database.cursor()
+        try: 
+
+            sql_request = 'DELETE FROM %s WHERE eventid="%s"' % (TABLENAME, self.eventid)
+            print " "
+            print sql_request
+            print " "
+            cursor.execute(sql_request)
+            database.commit()
+            return True
+        except Exception as e: 
+            database.rollback()
+            print e.message
+            return False
+
+
+
     def update(self, attrs):
 
         sql_request = 'UPDATE %s SET ' % TABLENAME

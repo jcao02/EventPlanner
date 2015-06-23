@@ -88,8 +88,10 @@ EventPlannerModule.controller('ListEventsController',
         $location.path('/event/'+eventId);
       };
 
-      $scope.ADeleteEvent3 = function() {
-        EventPlannerService.ADeleteEvent().then(function (object) {
+      $scope.ADeleteEvent3 = function(eventId) {
+
+      if (confirm('¿Seguro quieres eliminar el evento?')) {
+        EventPlannerService.ADeleteEvent({'eventId' : eventId}).then(function (object) {
           var msg = object.data["msg"];
           if (msg) flash(msg);
           var label = object.data["label"];
@@ -98,7 +100,8 @@ EventPlannerModule.controller('ListEventsController',
           } else {
               $location.path(label);
           }
-        });};
+        });
+      }};
 }]);
 
 EventPlannerModule.controller('ShowEventController', 

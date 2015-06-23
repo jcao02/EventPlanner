@@ -112,9 +112,16 @@ def ACreateUser():
 @EventPlanner.route('/eventplanner/ADeleteEvent')
 def ADeleteEvent():
     #POST/PUT parameters
-    params = request.get_json()
+    eventid = request.args.get('eventId')
+
+    event = Event.get(eventid)
+
     results = [{'label':'/VListEvents', 'msg':[ur'Evento eliminado exitosamente']}, {'label':'/VListEvents', 'msg':[ur'Error al eliminar evento']}, ]
-    res = results[0]
+
+    if event is not None and event.delete():
+        res = results[0]
+    else:
+        res = results[1]
     #Action code goes here, res should be a list with a label and a message
 
 
