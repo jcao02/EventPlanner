@@ -11,6 +11,5 @@ Aplicación de planificación y reserva de eventos, escrita usando AngularJS y F
 
 Desde la carpeta raíz del proyecto: 
 - Ejecutar: `pip install -r requirements.txt` para instalar dependencias de Python usadas en el proyecto
-- Ejecutar: `mkdir tmp && sqlite3 tmp/database < app/db/schema.sql` para inicializar la base de datos
+- Ejecutar: `mkdir tmp && sqlite3 tmp/database.db < app/db/schema.sql` para inicializar la base de datos
 - Ejecutar: `mkdir -p uploads/posters` para crear la carpeta de archivos subidos de la aplicación
-
