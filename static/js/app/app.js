@@ -22,6 +22,11 @@ EventPlannerModule.run(["$rootScope", "$location", "$route", "flash", "EventPlan
           })
       };
 
+    $rootScope.VHome = function() {
+        $location.path('/VHome');
+      };
+
+
 }])
 // Routing
 EventPlannerModule.config(function ($routeProvider) {
