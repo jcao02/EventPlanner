@@ -167,3 +167,44 @@ class User:
         #data = User(created_data).__dict__
         return created_data
 
+    @staticmethod
+    def verify_assistance(username):
+        sql_request = 'UPDATE %s SET assited = 1 WHERE participant = "%s"' % (ASSISTANCE_TABLENAME, username)
+        print " "
+        print sql_request
+        print " "
+
+        try: 
+            database = get_database()
+            cursor   = database.cursor()
+            cursor.execute(sql_request)
+            database.commit()
+            return True
+
+        except Exception as e: 
+            database.rollback()
+            print e.message
+            return False
+
+    @staticmethod
+    def cancel_assistance(username):
+        sql_request = 'UPDATE %s SET assited = 0 WHERE participant = "%s"' % (ASSISTANCE_TABLENAME, username)
+        print " "
+        print sql_request
+        print " "
+
+        try: 
+            database = get_database()
+            cursor   = database.cursor()
+            cursor.execute(sql_request)
+            database.commit()
+            return True
+
+        except Exception as e: 
+            database.rollback()
+            print e.message
+            return False
+
+
+        
+
