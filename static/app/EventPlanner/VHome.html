@@ -12,7 +12,8 @@
         </div>
         <div class="collapse navbar-collapse" id="contenido-plegable">
             <ul class="nav navbar-nav navbar-right">
-                <li class="navbar-text">{{user}}</li>
+                <li ng-show="actor != undefined" class="navbar-text">{{actor}}</li>
+                <li ng-show="actor != undefined"> <a ng-click="LogOut()">Salir</a> </li>
             </ul>
             <ul class="nav navbar-nav navbar-left">
                 <li>

@@ -347,4 +347,18 @@ EventPlannerModule.service('EventPlannerService', ['$q', '$http', function($q, $
         //    deferred.resolve(res);
         //    return deferred.promise;
     };
+
+    this.ACancelAssitance = function(args) {
+        if(typeof args == 'undefined') args={};
+        return $http({
+            url: 'eventplanner/ACancelAssitance',
+            method: 'GET',
+            params: args
+        });
+        //    var labels = ["/VListUsers", "/VListUsers", ];
+        //    var res = labels[0];
+        //    var deferred = $q.defer();
+        //    deferred.resolve(res);
+        //    return deferred.promise;
+    };
 }]);

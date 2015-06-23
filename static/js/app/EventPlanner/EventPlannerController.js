@@ -32,6 +32,7 @@ EventPlannerModule.controller('VHomeController',
     function ($scope, $location, $route, flash, EventPlannerService) {
       $scope.msg = '';
       EventPlannerService.VHome().then(function (object) {
+        console.log($scope); 
         $scope.res = object.data;
         for (var key in object.data) {
             $scope[key] = object.data[key];

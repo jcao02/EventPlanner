@@ -5,10 +5,12 @@ TABLENAME = "Assitance"
 class Assistance:
     user  = ""
     event = -1
+    assisted = 0
 
-    def __init__(self, user, event):
-        self.user  = user
-        self.event = event
+    def __init__(self, user, event, assisted=0):
+        self.user     = user
+        self.event    = event
+        self.assisted = assisted
 
     def save(self): 
         database = get_database()
@@ -29,12 +31,13 @@ class Assistance:
             return False
     
     def delete(self):
-        sql_request = 'DELETE FROM %s WHERE participant="%s" AND event="%s"' % (TABLENAME,user,event)
+        sql_request = 'DELETE FROM %s WHERE participant="%s" AND event="%s"' % (TABLENAME,self.user,self.event)
         print " "
         print sql_request
         print " "
         try: 
             database = get_database()
+            cursor   = database.cursor()
             cursor.execute(sql_request)
             database.commit()
             return True
@@ -46,7 +49,7 @@ class Assistance:
 
     @staticmethod
     def get(user, event):
-        sql_request = 'SELECT * FROM %s WHERE participant="%s" AND event="%s"' % (TABLENAME,user,event)
+        sql_request = 'SELECT participant,event,assited FROM %s WHERE participant="%s" AND event="%s"' % (TABLENAME,user,event)
         print " "
         print sql_request
         print " "
@@ -60,7 +63,7 @@ class Assistance:
         if row is None:
             return None
         else:
-            assistance = Assistance(row[0], int(row[1]))
+            assistance = Assistance(row[0], int(row[1]), int(row[2]))
             return assistance
 
 

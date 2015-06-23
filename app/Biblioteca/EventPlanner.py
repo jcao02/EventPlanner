@@ -28,6 +28,8 @@ def ACancelReservation():
             res = {'label':'/VShowEvent', 'msg':[ur'Error al cancelar la reserva del evento']}
 
 
+    res['reserved'] = 0
+
     #Action code ends here
     if "actor" in res:
         if res['actor'] is None:
@@ -249,17 +251,19 @@ def AGenerateCredentials():
 def ALogOutUser():
     #POST/PUT parameters
     params = request.get_json()
-    results = [{'label':'/VLoginUser', 'msg':[ur'Sesión exitosamente cerrada'], "actor":None}, {'label':'/VHome', 'msg':[ur'Error al cerrar sesión']}, ]
-    res = results[0]
+
+    if "actor" in session:
+        session.pop("actor")
+
+    results = [{'label':'/user/login', 'msg':[ur'Sesión exitosamente cerrada'], "actor":None}, {'label':'/VHome', 'msg':[ur'Error al cerrar sesión']}, ]
+    if "actor" in session: 
+        res = results[1]
+    else:
+        res = results[0]
     #Action code goes here, res should be a list with a label and a message
 
 
-    #Action code ends here
-    if "actor" in res:
-        if res['actor'] is None:
-            session.pop("actor", None)
-        else:
-            session['actor'] = res['actor']
+
     return json.dumps(res)
 
 
@@ -268,8 +272,10 @@ def ALogOutUser():
 def ALoginUser():
     #POST/PUT parameters
     params = request.get_json()
+    print "PARAMS", params
 
     user = User(params)
+    print "USER", user
 
     results = [ {'label':'/VHome', 'msg':[], "actor": user.user }, 
                 {'label':'/user/login', 'msg':[ur'Error al iniciar sesión']}, ]
@@ -316,6 +322,7 @@ def AReserveEvent():
             res = {'label':'/VShowEvent', 'msg':[ur'Error al reservar evento']}
 
 
+    res['reserved'] = 1
     #Action code ends here
     if "actor" in res:
         if res['actor'] is None:
@@ -323,7 +330,6 @@ def AReserveEvent():
         else:
             session['actor'] = res['actor']
 
-    print "AQUI", res
     return json.dumps(res)
 
 
@@ -335,11 +341,7 @@ def AUsers():
 
     results = [{'label':'/users', 'msg':[ur'Se listan los usuarios']  }, ]
 
-
-
     res = results[0]
-    #print "ANDREA", res
-
 
     #Action code goes here, res should be a list with a label and a message
 
@@ -357,10 +359,41 @@ def AUsers():
 @EventPlanner.route('/eventplanner/AVerifyAssitance')
 def AVerifyAssitance():
     #POST/PUT parameters
-    params = request.get_json()
+
+    user = request.args.get('user')
+    
+    print "username", user
     results = [{'label':'/VListUsers', 'msg':[ur'Asistencia verificada']}, {'label':'/VListUsers', 'msg':[ur'Error al verificar asistencia']}, ]
-    res = results[0]
     #Action code goes here, res should be a list with a label and a message
+
+    if user is not None and User.verify_assistance(user):
+        res = results[0]
+    else:
+        res = results[1]
+
+
+    #Action code ends here
+    if "actor" in res:
+        if res['actor'] is None:
+            session.pop("actor", None)
+        else:
+            session['actor'] = res['actor']
+    return json.dumps(res)
+
+@EventPlanner.route('/eventplanner/ACancelAssitance')
+def ACancelAssitance():
+    #POST/PUT parameters
+
+    user = request.args.get('user')
+    
+    print "username", user
+    results = [{'label':'/VListUsers', 'msg':[ur'Asistencia cancelada']}, {'label':'/VListUsers', 'msg':[ur'Error al cancelar asistencia']}, ]
+    #Action code goes here, res should be a list with a label and a message
+
+    if User.cancel_assistance(user):
+        res = results[0]
+    else:
+        res = results[1]
 
 
     #Action code ends here
@@ -430,8 +463,8 @@ def VListEvents():
     res = {}
     if "actor" in session:
         res['actor']=session['actor']
-        #events = map(lambda x: x.__dict__, Event.all_owned_by(session['actor']))
-        events = map(lambda x: x.__dict__, Event.all())
+        events = map(lambda x: x.__dict__, Event.all_owned_by(session['actor']))
+        #events = map(lambda x: x.__dict__, Event.all())
     else:
         events = map(lambda x: x.__dict__, Event.all())
 
@@ -449,17 +482,25 @@ def VListUsers():
     print request.args
     eventid = params.get('requestedUser')
     print eventid
+    by_event = False
+    owner = None
 
     if eventid is None:
         users = User.all()
     else:
         users = User.from_event(eventid)
+        owner = Event.get_owner(eventid)
+        by_event = True
 
 
     res = { 'users' : users }
+    res['actor'] = None
+    res['by_event'] =  by_event
+    res['owner'] = owner
 
     if "actor" in session:
         res['actor']=session['actor']
+
     #Action code goes here, res should be a JSON structure
 
 
@@ -520,9 +561,10 @@ def VShowEvent():
         res['actor'] = session['actor']
         assistance   = Assistance.get(res['actor'], eventid)
         if assistance is None:
-            res['reserved'] = 1
-        else:
             res['reserved'] = 0
+        else:
+            res['reserved'] = 1
+            res['assisted'] = assistance.assisted
     #Action code goes here, res should be a JSON structure
 
     print res

@@ -2,6 +2,27 @@
 var EventPlannerModule = angular.module('EventPlanner', 
                                         ['ngRoute', 'ngAnimate', 'flash']);
 
+EventPlannerModule.run(["$rootScope", "$location", "$route", "flash", "EventPlannerService", 
+                       function ($rootScope, $location, $route, flash, EventPlannerService) {
+    $rootScope.LogOut = function() {
+          EventPlannerService.ALogOutUser().then(function (object) {
+            var msg = object.data["msg"];
+            if (msg) flash(msg);
+            $rootScope.res = object.data;
+            for (var key in object.data) {
+                $rootScope[key] = object.data[key];
+            }
+
+            var label = object.data["label"];
+            if (label == "/VHome") {
+                $route.reload(); 
+            } else {
+                $location.path(label); 
+            }
+          })
+      };
+
+}])
 // Routing
 EventPlannerModule.config(function ($routeProvider) {
     $routeProvider

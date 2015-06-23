@@ -1,9 +1,9 @@
-- [ ] Cambiar boton "Reservar" o "Cancelar reserva" cuando "reserve" sea 0 o 1 (respectivamente)
+- [x] on 2015-06-09 17:39:26 | Cambiar boton "Reservar" o "Cancelar reserva" cuando "reserve" sea 0 o 1 (respectivamente)
 - [X] Listar eventos a los que asiste un usuario en el show de usuario
 - [X] Agregar acción de listar participantes en el show de event
-- [ ] Mostrar generar credenciales si está reservado el evento (reserved == 1)
-- [ ] Mostrar generar certificado si la columna "assisted" de Assistance es true en el usuario
+- [x] on 2015-06-09 17:42:05 | Mostrar generar credenciales si está reservado el evento (reserved == 1)
+- [x] on 2015-06-22 17:27:08 | Mostrar generar certificado si la columna "assisted" de Assistance es true en el usuario
 - [ ] Crear acción para marcar usuario como asistido en el evento X (verifyAssistance)
 - [ ] Hacer accion de logout
 - [ ] Hacer vistas mas lindas
-- [ ] Manejar cookie de session 
+- [x] on 2015-06-22 17:29:03 | Manejar cookie de session 
