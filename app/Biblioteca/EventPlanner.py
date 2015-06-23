@@ -470,8 +470,8 @@ def VListEvents():
     res = {}
     if "actor" in session:
         res['actor']=session['actor']
-        events = map(lambda x: x.__dict__, Event.all_owned_by(session['actor']))
-        #events = map(lambda x: x.__dict__, Event.all())
+        #events = map(lambda x: x.__dict__, Event.all_owned_by(session['actor']))
+        events = map(lambda x: x.__dict__, Event.all())
     else:
         events = map(lambda x: x.__dict__, Event.all())
 
